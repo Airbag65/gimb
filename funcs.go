@@ -26,6 +26,12 @@ func Default(s tcell.Screen) {
             Background(tcell.ColorBlack)
 }
 
+func Yellow(s tcell.Screen) {
+    usedStyle = tcell.StyleDefault.
+            Foreground(tcell.ColorYellow).
+            Background(tcell.ColorBlack)
+}
+
 
 func Help(s tcell.Screen) {
     defStyle := tcell.StyleDefault.
@@ -48,17 +54,20 @@ func Help(s tcell.Screen) {
     PlaceText(s, 3, 12, "def", defStyle)
     PlaceText(s, 20, 12, "-- Change foreground color to defult color", defStyle)
 
-    PlaceText(s, 3, 14, "q", defStyle)
-    PlaceText(s, 20, 14, "-- Quit application", defStyle)
+    PlaceText(s, 3, 14, "yellow", defStyle)
+    PlaceText(s, 20, 14, "-- Change foreground color to yellow", defStyle)
 
-    PlaceText(s, 3, 16, "quit", defStyle)
+    PlaceText(s, 3, 16, "q", defStyle)
     PlaceText(s, 20, 16, "-- Quit application", defStyle)
 
-    PlaceText(s, 3, 18, "h", defStyle)
-    PlaceText(s, 20, 18, "-- Help menu", defStyle)
+    PlaceText(s, 3, 18, "quit", defStyle)
+    PlaceText(s, 20, 18, "-- Quit application", defStyle)
 
-    PlaceText(s, 3, 20, "help", defStyle)
+    PlaceText(s, 3, 20, "h", defStyle)
     PlaceText(s, 20, 20, "-- Help menu", defStyle)
+
+    PlaceText(s, 3, 22, "help", defStyle)
+    PlaceText(s, 20, 22, "-- Help menu", defStyle)
 
     s.Show() 
 

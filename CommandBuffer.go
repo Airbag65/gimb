@@ -35,6 +35,8 @@ func (c *CommandBuffer) ExecuteCommand(s tcell.Screen) error {
         Help(s)
     case "def":
         Default(s)
+    case "yellow":
+        Yellow(s)
     default:
         PlaceText(s, 5, 50, "Unrecognized Command", tcell.StyleDefault.Foreground(tcell.ColorRed))
     }
@@ -51,7 +53,7 @@ func (c *CommandBuffer) Add(char rune) {
 }
 
 func (c *CommandBuffer) DelKey() {
-    // TODO:  Fixa denna skiten
+    // TODO:  Fixa den här skiten
     if len(c.Command) != 0{
         c.Command = c.Command[:len(c.Command) - 1]
     }

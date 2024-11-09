@@ -64,7 +64,13 @@ func main(){
                 PlaceText(screen, 5, 50, fmt.Sprintf("Command=> :%s", buffer.Command), usedStyle)
             }    
         }
+        width, _ := screen.Size()
         screen.SetStyle(usedStyle)
+        // PlaceText(screen, 10, 10, fmt.Sprintf("%d * %d", a, b), usedStyle)
+        for i := 0; i < width; i++{
+            screen.SetContent(width - i, 49, '_', nil, usedStyle)
+            screen.SetContent(width - i, 4, '_', nil, usedStyle)
+        }
         PlaceText(screen, 2, 2, "Welcome to the thing!", usedStyle)
         PlaceText(screen, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)
         PlaceText(screen, 5, 51, "Use command h/help for list of commands", usedStyle)
