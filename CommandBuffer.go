@@ -33,6 +33,8 @@ func (c *CommandBuffer) ExecuteCommand(s tcell.Screen) error {
         Help(s)
     case "help":
         Help(s)
+    case "def":
+        Default(s)
     default:
         PlaceText(s, 5, 50, "Unrecognized Command", tcell.StyleDefault.Foreground(tcell.ColorRed))
     }

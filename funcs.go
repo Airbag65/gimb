@@ -20,6 +20,13 @@ func Blue(s tcell.Screen) {
             Background(tcell.ColorBlack)
 }
 
+func Default(s tcell.Screen) {
+    usedStyle = tcell.StyleDefault.
+            Foreground(tcell.ColorWhite).
+            Background(tcell.ColorBlack)
+}
+
+
 func Help(s tcell.Screen) {
     defStyle := tcell.StyleDefault.
         Background(tcell.ColorBlack).
@@ -28,20 +35,31 @@ func Help(s tcell.Screen) {
     s.Clear()
     PlaceText(s, 3, 3, "Help Menu -- Press Q to quit menu", defStyle)
     PlaceText(s, 3, 5, "Commands:", defStyle)
+
     PlaceText(s, 3, 6, "red", defStyle)
     PlaceText(s, 20, 6, "-- Change foreground color to red", defStyle)
-    PlaceText(s, 3, 7, "green", defStyle)
-    PlaceText(s, 20, 7, "-- Change foreground color to green", defStyle)
-    PlaceText(s, 3, 8, "blue", defStyle)
-    PlaceText(s, 20, 8, "-- Change foreground color to blue", defStyle)
-    PlaceText(s, 3, 9, "q", defStyle)
-    PlaceText(s, 20, 9, "-- Quit application", defStyle)
-    PlaceText(s, 3, 10, "quit", defStyle)
-    PlaceText(s, 20, 10, "-- Quit application", defStyle)
-    PlaceText(s, 3, 11, "h", defStyle)
-    PlaceText(s, 20, 11, "-- Help menu", defStyle)
-    PlaceText(s, 3, 12, "help", defStyle)
-    PlaceText(s, 20, 12, "-- Help menu", defStyle)
+
+    PlaceText(s, 3, 8, "green", defStyle)
+    PlaceText(s, 20, 8, "-- Change foreground color to green", defStyle)
+
+    PlaceText(s, 3, 10, "blue", defStyle)
+    PlaceText(s, 20, 10, "-- Change foreground color to blue", defStyle)
+
+    PlaceText(s, 3, 12, "def", defStyle)
+    PlaceText(s, 20, 12, "-- Change foreground color to defult color", defStyle)
+
+    PlaceText(s, 3, 14, "q", defStyle)
+    PlaceText(s, 20, 14, "-- Quit application", defStyle)
+
+    PlaceText(s, 3, 16, "quit", defStyle)
+    PlaceText(s, 20, 16, "-- Quit application", defStyle)
+
+    PlaceText(s, 3, 18, "h", defStyle)
+    PlaceText(s, 20, 18, "-- Help menu", defStyle)
+
+    PlaceText(s, 3, 20, "help", defStyle)
+    PlaceText(s, 20, 20, "-- Help menu", defStyle)
+
     s.Show() 
 
     for{
