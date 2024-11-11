@@ -22,9 +22,6 @@ func main(){
     buffer := NewBuffer()
     commandMode := false
 
-    // screen.SetStyle(tcell.StyleDefault)
-    // screen.Clear()
-    
     quit := func() {
 		maybePanic := recover()
 		screen.Fini()
@@ -54,26 +51,26 @@ func main(){
                 }
             }
             if commandMode && ev.Key() == tcell.KeyBackspace2{
-                buffer.DelKey()
+                buffer.DelKey(screen)
             }
             if ev.Rune() == ':'{
                 commandMode = true
             }
             if commandMode{
                 buffer.Add(ev.Rune())
-                PlaceText(screen, 5, 50, fmt.Sprintf("Command=> :%s", buffer.Command), usedStyle)
+                PlaceText(screen, 5, 50, fmt.Sprintf("Command=> :%s", buffer.ToString()), usedStyle)
             }    
         }
         width, _ := screen.Size()
         screen.SetStyle(usedStyle)
-        // PlaceText(screen, 10, 10, fmt.Sprintf("%d * %d", a, b), usedStyle)
-        for i := 0; i < width; i++{
+        for i := 0; i < width; i++ {
             screen.SetContent(width - i, 49, '_', nil, usedStyle)
             screen.SetContent(width - i, 4, '_', nil, usedStyle)
         }
         PlaceText(screen, 2, 2, "Welcome to the thing!", usedStyle)
         PlaceText(screen, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)
         PlaceText(screen, 5, 51, "Use command h/help for list of commands", usedStyle)
+        // PlaceText(screen, 20, 20, fmt.Sprintf("%s %d", buffer.Command, len(buffer.Command)), tcell.StyleDefault.Background(tcell.ColorGreen))
         screen.Show()
 
     }

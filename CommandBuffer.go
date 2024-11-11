@@ -2,23 +2,24 @@ package main
 
 import (
     "fmt"
-    // "log"
 	"github.com/gdamore/tcell/v2"
+    "strings"
 )
 
 type CommandBuffer struct {
-    Command string
+    Command []string
 }
 
 
 func NewBuffer() *CommandBuffer {
     return &CommandBuffer{
-        Command: "",
+        Command: []string {},
     }
 }
 
 func (c *CommandBuffer) ExecuteCommand(s tcell.Screen) error {
-    switch c.Command{
+    Command := strings.Join(c.Command[:], "")
+    switch Command{
     case "red":
         Red(s)
     case "green":
@@ -41,20 +42,39 @@ func (c *CommandBuffer) ExecuteCommand(s tcell.Screen) error {
         PlaceText(s, 5, 50, "Unrecognized Command", tcell.StyleDefault.Foreground(tcell.ColorRed))
     }
 
-    c.Command = ""
+    c.Command = []string {}
     return nil
 }
 
 
 func (c *CommandBuffer) Add(char rune) {
     if char != ':'{
-        c.Command += string(char)
+        c.Command = append(c.Command, string(char))
     }
 }
 
-func (c *CommandBuffer) DelKey() {
-    // TODO:  Fixa den här skiten
-    if len(c.Command) != 0{
-        c.Command = c.Command[:len(c.Command) - 1]
-    }
+func (c *CommandBuffer) DelKey(s tcell.Screen) {
+    pop(&c.Command, s)
+}
+
+func pop(list *[]string, s tcell.Screen) string {
+    l := len(*list)
+    // var NewList []string = (*list)[:] 
+    // PlaceText(s, 30, 30, fmt.Sprintf("%v", NewList), tcell.StyleDefault.Background(tcell.ColorBlue))
+    val := (*list)[l-1]
+    *list = nil 
+    // if len((*list)) > 0{
+    //     (*list)[0] = NewList[0]
+    // }
+    // for i := 1; i < (len(NewList) - 1); i++{
+    //     (*list) = append((*list), NewList[i])
+    // }
+    return val
+}
+
+
+
+func (c *CommandBuffer) ToString() string {
+    CmdString := strings.Join(c.Command[:], "")
+    return CmdString
 }
