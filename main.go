@@ -51,7 +51,21 @@ func main(){
                 }
             }
             if commandMode && ev.Key() == tcell.KeyBackspace2{
-                buffer.DelKey(screen)
+                buffer.DelKey()
+                screen.Clear()
+                width, _ := screen.Size()
+                screen.SetStyle(usedStyle)
+                for i := 0; i < width; i++ {
+                    screen.SetContent(width - i, 49, '_', nil, usedStyle)
+                    screen.SetContent(width - i, 4, '_', nil, usedStyle)
+                }
+                PlaceText(screen, 2, 2, "Welcome to the thing!", usedStyle)
+                PlaceText(screen, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)
+                PlaceText(screen, 5, 51, "Use command h/help for list of commands", usedStyle)
+                PlaceText(screen, 5, 50, fmt.Sprintf("Command=> :%s", buffer.ToString()), usedStyle)
+                screen.Show()
+                continue
+
             }
             if ev.Rune() == ':'{
                 commandMode = true
@@ -70,7 +84,6 @@ func main(){
         PlaceText(screen, 2, 2, "Welcome to the thing!", usedStyle)
         PlaceText(screen, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)
         PlaceText(screen, 5, 51, "Use command h/help for list of commands", usedStyle)
-        // PlaceText(screen, 20, 20, fmt.Sprintf("%s %d", buffer.Command, len(buffer.Command)), tcell.StyleDefault.Background(tcell.ColorGreen))
         screen.Show()
 
     }

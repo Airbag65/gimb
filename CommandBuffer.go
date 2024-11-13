@@ -53,28 +53,24 @@ func (c *CommandBuffer) Add(char rune) {
     }
 }
 
-func (c *CommandBuffer) DelKey(s tcell.Screen) {
-    pop(&c.Command, s)
+func (c *CommandBuffer) DelKey() {
+    c.Command = c.Command[:len(c.Command)-1]
+    // pop(&c.Command)
 }
 
-func pop(list *[]string, s tcell.Screen) string {
+func pop(list *[]string) string {
     l := len(*list)
-    // var NewList []string = (*list)[:] 
-    // PlaceText(s, 30, 30, fmt.Sprintf("%v", NewList), tcell.StyleDefault.Background(tcell.ColorBlue))
     val := (*list)[l-1]
-    *list = nil 
-    // if len((*list)) > 0{
-    //     (*list)[0] = NewList[0]
-    // }
-    // for i := 1; i < (len(NewList) - 1); i++{
-    //     (*list) = append((*list), NewList[i])
-    // }
+    *list = (*list)[:l-1] 
     return val
 }
-
 
 
 func (c *CommandBuffer) ToString() string {
     CmdString := strings.Join(c.Command[:], "")
     return CmdString
 }
+
+
+
+
