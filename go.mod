@@ -1,4 +1,4 @@
-module tcell_test
+module gimb
 
 go 1.22.0
 

@@ -3,15 +3,42 @@ package main
 import (
 	"fmt"
 	"log"
-
+    "os"
 	"github.com/gdamore/tcell/v2"
+    "strings"
 )
 var usedStyle tcell.Style = tcell.StyleDefault.
         Background(tcell.ColorBlack).
         Foreground(tcell.ColorWhite)
 
+
+func draw(s tcell.Screen, file *File, buffer *CommandBuffer){
+    s.Clear() 
+    width, _ := s.Size()
+    s.SetStyle(usedStyle)
+    for i := 0; i < width; i++ {
+        s.SetContent(width - i, 49, '_', nil, usedStyle)
+        s.SetContent(width - i, 4, '_', nil, usedStyle)
+    }
+    PlaceText(s, 2, 2, "Welcome to the thing!", usedStyle)
+    PlaceText(s, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)
+    PlaceText(s, 5, 51, "Use command h/help for list of commands", usedStyle)
+    PlaceText(s, 5, 50, fmt.Sprintf("Command=> :%s", buffer.ToString()), usedStyle)   
+    for i, line := range file.FileContent {
+        lineNum := fmt.Sprintf("%d|", i+1)
+        lineNum = strings.Repeat(string(' '), 4 - len(lineNum)) + lineNum
+        PlaceText(s, 2, 5 + i, lineNum, tcell.StyleDefault.Foreground(tcell.ColorGray))           
+        PlaceText(s, 7, 5 + i, line, tcell.StyleDefault.Foreground(tcell.ColorWhite))
+    }
+    s.Show()
+}
+
+
 func main(){
     screen, err := tcell.NewScreen()
+
+    file := NewFile(string(os.Args[1]))
+    file.FileContent = append(file.FileContent, "Test from the program")
     if err != nil{
         log.Fatalf("%+v", err)
     }
@@ -45,25 +72,14 @@ func main(){
             }
             if commandMode && ev.Key() == tcell.KeyEnter{
                 commandMode = false
-                err := buffer.ExecuteCommand(screen)
+                err := buffer.ExecuteCommand(screen, file)
                 if err != nil {
                     return
                 }
             }
             if commandMode && ev.Key() == tcell.KeyBackspace2{
                 buffer.DelKey()
-                screen.Clear()
-                width, _ := screen.Size()
-                screen.SetStyle(usedStyle)
-                for i := 0; i < width; i++ {
-                    screen.SetContent(width - i, 49, '_', nil, usedStyle)
-                    screen.SetContent(width - i, 4, '_', nil, usedStyle)
-                }
-                PlaceText(screen, 2, 2, "Welcome to the thing!", usedStyle)
-                PlaceText(screen, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)
-                PlaceText(screen, 5, 51, "Use command h/help for list of commands", usedStyle)
-                PlaceText(screen, 5, 50, fmt.Sprintf("Command=> :%s", buffer.ToString()), usedStyle)
-                screen.Show()
+                draw(screen, file, buffer)
                 continue
 
             }
@@ -80,6 +96,12 @@ func main(){
         for i := 0; i < width; i++ {
             screen.SetContent(width - i, 49, '_', nil, usedStyle)
             screen.SetContent(width - i, 4, '_', nil, usedStyle)
+        }
+        for i, line := range file.FileContent {
+            lineNum := fmt.Sprintf("%d|", i+1)
+            lineNum = strings.Repeat(string(' '), 4 - len(lineNum)) + lineNum
+            PlaceText(screen, 2, 5 + i, lineNum, tcell.StyleDefault.Foreground(tcell.ColorGray))
+            PlaceText(screen, 7, 5 + i, line, tcell.StyleDefault.Foreground(tcell.ColorWhite))
         }
         PlaceText(screen, 2, 2, "Welcome to the thing!", usedStyle)
         PlaceText(screen, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)

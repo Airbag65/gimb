@@ -17,7 +17,7 @@ func NewBuffer() *CommandBuffer {
     }
 }
 
-func (c *CommandBuffer) ExecuteCommand(s tcell.Screen) error {
+func (c *CommandBuffer) ExecuteCommand(s tcell.Screen, f *File) error {
     Command := strings.Join(c.Command[:], "")
     switch Command{
     case "red":
@@ -38,6 +38,11 @@ func (c *CommandBuffer) ExecuteCommand(s tcell.Screen) error {
         Default(s)
     case "yellow":
         Yellow(s)
+    case "w":
+        f.SaveFile()
+    case "wq":
+        f.SaveFile()
+        return fmt.Errorf("Save and quit")
     default:
         PlaceText(s, 5, 50, "Unrecognized Command", tcell.StyleDefault.Foreground(tcell.ColorRed))
     }
@@ -54,7 +59,9 @@ func (c *CommandBuffer) Add(char rune) {
 }
 
 func (c *CommandBuffer) DelKey() {
-    c.Command = c.Command[:len(c.Command)-1]
+    if len(c.Command) > 0{
+        c.Command = c.Command[:len(c.Command)-1]
+    }
     // pop(&c.Command)
 }
 
