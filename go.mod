@@ -1,4 +1,4 @@
-module gimb
+module gimb_out
 
 go 1.22.0
 

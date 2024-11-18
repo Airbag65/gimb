@@ -12,23 +12,25 @@ var usedStyle tcell.Style = tcell.StyleDefault.
         Foreground(tcell.ColorWhite)
 
 
-func draw(s tcell.Screen, file *File, buffer *CommandBuffer){
+func draw(s tcell.Screen, file *File, buffer *CommandBuffer, mode string){
     s.Clear() 
     width, _ := s.Size()
     s.SetStyle(usedStyle)
     for i := 0; i < width; i++ {
         s.SetContent(width - i, 49, '_', nil, usedStyle)
-        s.SetContent(width - i, 4, '_', nil, usedStyle)
+        s.SetContent(width - i, 5, '_', nil, usedStyle)
     }
-    PlaceText(s, 2, 2, "Welcome to the thing!", usedStyle)
+    PlaceText(s, (width / 2) - 2, 2, "GIMB", usedStyle)
+    PlaceText(s, (width / 2) - ((len(mode) + 6) / 2), 4, fmt.Sprintf("-- %s --", mode), usedStyle)
+    PlaceText(s, (width / 2) - ((len(mode) + 2) / 2), 3, fmt.Sprintf("\"%s\"", file.FilePath), usedStyle)
     PlaceText(s, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)
     PlaceText(s, 5, 51, "Use command h/help for list of commands", usedStyle)
     PlaceText(s, 5, 50, fmt.Sprintf("Command=> :%s", buffer.ToString()), usedStyle)   
     for i, line := range file.FileContent {
         lineNum := fmt.Sprintf("%d|", i+1)
         lineNum = strings.Repeat(string(' '), 4 - len(lineNum)) + lineNum
-        PlaceText(s, 2, 5 + i, lineNum, tcell.StyleDefault.Foreground(tcell.ColorGray))           
-        PlaceText(s, 7, 5 + i, line, tcell.StyleDefault.Foreground(tcell.ColorWhite))
+        PlaceText(s, 2, 6 + i, lineNum, tcell.StyleDefault.Foreground(tcell.ColorGray))           
+        PlaceText(s, 7, 6 + i, line, tcell.StyleDefault.Foreground(tcell.ColorWhite))
     }
     s.Show()
 }
@@ -48,6 +50,7 @@ func main(){
 
     buffer := NewBuffer()
     commandMode := false
+    insertMode := false
 
     quit := func() {
 		maybePanic := recover()
@@ -60,7 +63,15 @@ func main(){
 	defer quit()
 
    
+    var mode string
     for {
+        if commandMode{
+            mode = "COMMAND"
+        }else if (insertMode){
+            mode = "INSERT"
+        }else{
+            mode = "NORMAL"
+        }
         screen.Clear()
 
         ev := screen.PollEvent()
@@ -68,9 +79,10 @@ func main(){
         switch ev := ev.(type) {
         case *tcell.EventKey:
             if ev.Key() == tcell.KeyEscape{
-                return
+                continue
             }
             if commandMode && ev.Key() == tcell.KeyEnter{
+                mode = "NORMAL"
                 commandMode = false
                 err := buffer.ExecuteCommand(screen, file)
                 if err != nil {
@@ -79,11 +91,12 @@ func main(){
             }
             if commandMode && ev.Key() == tcell.KeyBackspace2{
                 buffer.DelKey()
-                draw(screen, file, buffer)
+                draw(screen, file, buffer, mode)
                 continue
 
             }
             if ev.Rune() == ':'{
+                mode = "COMMAND"
                 commandMode = true
             }
             if commandMode{
@@ -95,18 +108,19 @@ func main(){
         screen.SetStyle(usedStyle)
         for i := 0; i < width; i++ {
             screen.SetContent(width - i, 49, '_', nil, usedStyle)
-            screen.SetContent(width - i, 4, '_', nil, usedStyle)
+            screen.SetContent(width - i, 5, '_', nil, usedStyle)
         }
         for i, line := range file.FileContent {
             lineNum := fmt.Sprintf("%d|", i+1)
             lineNum = strings.Repeat(string(' '), 4 - len(lineNum)) + lineNum
-            PlaceText(screen, 2, 5 + i, lineNum, tcell.StyleDefault.Foreground(tcell.ColorGray))
-            PlaceText(screen, 7, 5 + i, line, tcell.StyleDefault.Foreground(tcell.ColorWhite))
+            PlaceText(screen, 2, 6 + i, lineNum, tcell.StyleDefault.Foreground(tcell.ColorGray))
+            PlaceText(screen, 7, 6 + i, line, tcell.StyleDefault.Foreground(tcell.ColorWhite))
         }
-        PlaceText(screen, 2, 2, "Welcome to the thing!", usedStyle)
+        PlaceText(screen, (width / 2) - 2, 2, "GIMB", usedStyle)
+        PlaceText(screen, (width / 2) - ((len(mode) + 6) / 2), 4, fmt.Sprintf("-- %s --", mode), usedStyle)
+        PlaceText(screen, (width / 2) - ((len(mode) + 2) / 2), 3, fmt.Sprintf("\"%s\"", file.FilePath), usedStyle)
         PlaceText(screen, 2, 3, "Press ESC, or use command q/quit, to exit", usedStyle)
         PlaceText(screen, 5, 51, "Use command h/help for list of commands", usedStyle)
         screen.Show()
-
     }
 }
