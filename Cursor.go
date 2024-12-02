@@ -4,6 +4,10 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
+var style tcell.Style = tcell.StyleDefault.
+        Foreground(tcell.ColorBlack).
+        Background(tcell.ColorWhite)
+
 type Cursor struct{
    Char rune
    InBlink bool
@@ -23,9 +27,9 @@ func CreateCursor(x, y int, char rune) *Cursor{
 func (c Cursor) Blink(s tcell.Screen) {
     if c.InBlink{
         c.InBlink = false
-        // display
+        style = tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
     } else {
         c.InBlink = true
-        // display
+        style = tcell.StyleDefault.Foreground(tcell.ColorBlack).Background(tcell.ColorWhite)
     }
 }

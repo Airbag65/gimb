@@ -1,7 +1,6 @@
 package main
 
 import (
-    // "fmt"
     "bufio"
     "os"
     "strings"
@@ -47,15 +46,11 @@ func NewFile(Path string) *File {
 
 func (file *File) SaveFile() {
     compressedFileContent := strings.Join(file.FileContent[:], "\n")
-    // panic(compressedFileContent)
     f, err := os.OpenFile(file.FilePath, os.O_WRONLY, 0644)
     if err != nil{
         return
     }
     defer f.Close() 
 
-    // writer := bufio.NewWriter(f)
     f.Write([]byte(compressedFileContent))
-    // writer.Flush()
-
 }
