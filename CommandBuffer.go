@@ -62,14 +62,6 @@ func (c *CommandBuffer) DelKey() {
     if len(c.Command) > 0{
         c.Command = c.Command[:len(c.Command)-1]
     }
-    // pop(&c.Command)
-}
-
-func pop(list *[]string) string {
-    l := len(*list)
-    val := (*list)[l-1]
-    *list = (*list)[:l-1] 
-    return val
 }
 
 
