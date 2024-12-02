@@ -1,36 +1,36 @@
-package main
+package utils 
 
 import "github.com/gdamore/tcell/v2"
 
-func Red(s tcell.Screen) {
-    usedStyle = tcell.StyleDefault.
-            Foreground(tcell.ColorRed).
-            Background(tcell.ColorBlack)
-}
-
-func Green(s tcell.Screen) {
-    usedStyle = tcell.StyleDefault.
-            Foreground(tcell.ColorGreen).
-            Background(tcell.ColorBlack)
-}
-
-func Blue(s tcell.Screen) {
-    usedStyle = tcell.StyleDefault.
-            Foreground(tcell.ColorBlue).
-            Background(tcell.ColorBlack)
-}
-
-func Default(s tcell.Screen) {
-    usedStyle = tcell.StyleDefault.
-            Foreground(tcell.ColorWhite).
-            Background(tcell.ColorBlack)
-}
-
-func Yellow(s tcell.Screen) {
-    usedStyle = tcell.StyleDefault.
-            Foreground(tcell.ColorYellow).
-            Background(tcell.ColorBlack)
-}
+// func Red(s tcell.Screen) {
+//     usedStyle = tcell.StyleDefault.
+//             Foreground(tcell.ColorRed).
+//             Background(tcell.ColorBlack)
+// }
+//
+// func Green(s tcell.Screen) {
+//     usedStyle = tcell.StyleDefault.
+//             Foreground(tcell.ColorGreen).
+//             Background(tcell.ColorBlack)
+// }
+//
+// func Blue(s tcell.Screen) {
+//     usedStyle = tcell.StyleDefault.
+//             Foreground(tcell.ColorBlue).
+//             Background(tcell.ColorBlack)
+// }
+//
+// func Default(s tcell.Screen) {
+//     usedStyle = tcell.StyleDefault.
+//             Foreground(tcell.ColorWhite).
+//             Background(tcell.ColorBlack)
+// }
+//
+// func Yellow(s tcell.Screen) {
+//     usedStyle = tcell.StyleDefault.
+//             Foreground(tcell.ColorYellow).
+//             Background(tcell.ColorBlack)
+// }
 
 
 func Help(s tcell.Screen) {
