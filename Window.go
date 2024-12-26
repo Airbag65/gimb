@@ -61,12 +61,13 @@ func (w *Window) HandleEvent(e chan error){
 	event := w.Screen.PollEvent()
 	switch ev := event.(type) {
 	case *tcell.EventKey:
-		if ev.Rune() == ':' && w.Mode != utils.InsertMode{
+		if ev.Rune() == ':' && w.Mode == utils.NormalMode{
 			w.Mode = utils.CommandMode
             w.DrawCommandLine()
-		} else if ev.Rune() == 'i' {
+		} else if ev.Rune() == 'i' && w.Mode == utils.NormalMode {
 			w.Mode = utils.InsertMode
             w.DrawFrame()
+            break
 		}
         if w.Mode == utils.CommandMode {
             if err := w.HandleCommandMode(event); err != nil {
@@ -76,7 +77,10 @@ func (w *Window) HandleEvent(e chan error){
             if err := w.HandleInsertMode(event); err != nil {
                 e <- err
             }
-        } 	}
+        } else if w.Mode == utils.NormalMode {
+            w.HandleNormalMode(event)
+        }
+    }
     e <- nil
 }
 
@@ -104,7 +108,7 @@ func (w *Window) Draw() {
 	defer quit()
 
 	for {
-        // go w.File.Cursor.Blink()
+        w.Screen.Clear()
 		w.DrawFrame()
 		w.DrawCommandLine()
         w.DrawFileContent()
@@ -114,14 +118,6 @@ func (w *Window) Draw() {
 
         c := make(chan error)
         go w.HandleEvent(c)
-        // quit := func () error {
-        //     err := <- c
-        //     if err != nil {
-        //         panic(err)
-        //     }
-        //     return nil
-        // }
-        // defer quit()
         err := <- c
         if err != nil {
             panic(err)
