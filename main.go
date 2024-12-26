@@ -6,6 +6,11 @@ import (
 )
 
 func main() {
+    defer func(){
+        if r := recover(); r != nil {
+            // fmt.Println("Quit gimb")
+        }
+    }()
 	path := string(os.Args[1])
 	if path == "" {
 		path = "tmp.txt"

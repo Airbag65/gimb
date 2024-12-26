@@ -1,18 +1,18 @@
 package utils
 
 import (
-	// "fmt"
 	"bufio"
 	"os"
 	"strings"
 )
 
-type File struct {
+type FileManager struct {
 	FilePath    string
-	FileContent []string
+	FileContent [][]rune
+    Cursor      Cursor
 }
 
-func NewFile(Path string) *File {
+func NewFile(Path string) *FileManager {
 	_, err := os.Stat(Path)
 	if os.IsNotExist(err) {
 		file, err := os.Create(Path)
@@ -21,9 +21,10 @@ func NewFile(Path string) *File {
 		}
 		defer file.Close()
 
-		return &File{
+		return &FileManager{
 			FilePath:    Path,
-			FileContent: []string{},
+			FileContent: [][]rune{},
+            Cursor:      *CreateCursor(0, 0, ' '),
 		}
 	}
 	file, err := os.Open(Path)
@@ -32,28 +33,31 @@ func NewFile(Path string) *File {
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
-	content := []string{}
+	content := [][]rune{}
 	for scanner.Scan() {
-		content = append(content, scanner.Text())
+        str := scanner.Text()
+        content = append(content, []rune(str))
 	}
 
-	return &File{
+	return &FileManager{
 		FilePath:    Path,
 		FileContent: content,
+        Cursor:      *CreateCursor(0, 0, content[0][0]),
 	}
 }
 
-func (file *File) SaveFile() {
-	compressedFileContent := strings.Join(file.FileContent[:], "\n")
-	// panic(compressedFileContent)
+func (file *FileManager) SaveFile() {
+    strSlice := []string{}
+    for _, line := range file.FileContent{
+        strSlice = append(strSlice, string(line))
+    }
+	compressedFileContent := strings.Join(strSlice[:], "\n")
 	f, err := os.OpenFile(file.FilePath, os.O_WRONLY, 0644)
 	if err != nil {
 		return
 	}
 	defer f.Close()
 
-	// writer := bufio.NewWriter(f)
 	f.Write([]byte(compressedFileContent))
-	// writer.Flush()
 
 }

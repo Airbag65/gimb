@@ -16,7 +16,7 @@ func NewBuffer() *CommandBuffer {
 	}
 }
 
-func (c *CommandBuffer) ExecuteCommand(s tcell.Screen, f *File) error {
+func (c *CommandBuffer) ExecuteCommand(s tcell.Screen, f *FileManager) error {
 	Command := strings.Join(c.Command[:], "")
 	switch Command {
 	// case "red":
@@ -46,7 +46,7 @@ func (c *CommandBuffer) ExecuteCommand(s tcell.Screen, f *File) error {
 		PlaceText(s, 5, 50, "Unrecognized Command", tcell.StyleDefault.Foreground(tcell.ColorRed))
 	}
 
-	c.Command = []string{}
+    c.Clear()
 	return nil
 }
 
@@ -60,6 +60,10 @@ func (c *CommandBuffer) DelKey() {
 	if len(c.Command) > 0 {
 		c.Command = c.Command[:len(c.Command)-1]
 	}
+}
+
+func (c *CommandBuffer) Clear() {
+    c.Command = []string{}
 }
 
 func (c *CommandBuffer) ToString() string {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gimb_out/utils"
 	"log"
+	"strings"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -12,7 +13,7 @@ type Window struct {
 	Screen        tcell.Screen
 	Style         tcell.Style
 	CommandBuffer utils.CommandBuffer
-	File          utils.File
+	File          utils.FileManager
 	Mode          utils.EditorMode
 }
 
@@ -34,38 +35,62 @@ func NewWindow(filepath string) *Window {
 }
 
 func (w *Window) DrawFrame() {
-	width, _ := w.Screen.Size()
+	width, height := w.Screen.Size()
 	for i := 0; i < width; i++ {
-		w.Screen.SetContent(width-i, 49, '_', nil, tcell.StyleDefault)
+		w.Screen.SetContent(width-i, height - 4, '_', nil, tcell.StyleDefault)
 		w.Screen.SetContent(width-i, 5, '_', nil, tcell.StyleDefault)
-		w.Screen.SetContent(width-i, 50, ' ', nil, tcell.StyleDefault.Background(tcell.ColorGray))
+		w.Screen.SetContent(width-i, height - 3, ' ', nil, tcell.StyleDefault.Background(tcell.ColorGray))
 	}
-	_ = len(w.Mode.String()) + 2
-	// Lägga texten där den ska vara!
-	utils.PlaceText(w.Screen, width-15, 50, w.Mode.String(), tcell.StyleDefault.Background(tcell.ColorGray))
+	l := len(w.Mode.String())
+	FillerRight := strings.Repeat("-", 12-l)
+	ToPlaceMode := fmt.Sprintf("--%s%s", w.Mode.String(), FillerRight)
+	ToPlaceFilename := fmt.Sprintf("--%s--", w.File.FilePath)
+
+	utils.PlaceText(w.Screen, width - 12, height - 3,ToPlaceMode, tcell.StyleDefault.Background(tcell.ColorGray))
+	utils.PlaceText(w.Screen, 1, 4, ToPlaceFilename, w.Style)
 }
 
 func (w *Window) DrawCommandLine() {
+	_, height := w.Screen.Size()
 	if w.Mode == utils.CommandMode {
-		utils.PlaceText(w.Screen, 5, 50, fmt.Sprintf("Command => :%s", w.CommandBuffer.ToString()), tcell.StyleDefault.Background(tcell.ColorGray))
+		utils.PlaceText(w.Screen, 5, height - 3, fmt.Sprintf("Command => :%s", w.CommandBuffer.ToString()), tcell.StyleDefault.Background(tcell.ColorGray))
 	}
 }
 
-func (w *Window) HandleEvent() error {
+func (w *Window) HandleEvent(e chan error){
 	event := w.Screen.PollEvent()
 	switch ev := event.(type) {
 	case *tcell.EventKey:
-		if ev.Key() == tcell.KeyEscape {
-			w.Mode = utils.NormalMode
-			return fmt.Errorf("Exit")
-		} else if ev.Rune() == ':' {
+		if ev.Rune() == ':' && w.Mode != utils.InsertMode{
 			w.Mode = utils.CommandMode
+            w.DrawCommandLine()
 		} else if ev.Rune() == 'i' {
 			w.Mode = utils.InsertMode
+            w.DrawFrame()
 		}
-	}
+        if w.Mode == utils.CommandMode {
+            if err := w.HandleCommandMode(event); err != nil {
+                e <- err
+            }
+        } else if w.Mode == utils.InsertMode {
+            if err := w.HandleInsertMode(event); err != nil {
+                e <- err
+            }
+        } 	}
+    e <- nil
+}
 
-	return nil
+func (w *Window) DrawFileContent(){
+    for i, line := range w.File.FileContent {
+        lineNum := fmt.Sprintf("%d|", i+1)
+        lineNum = strings.Repeat(string(' '), 4 - len(lineNum)) + lineNum
+        utils.PlaceText(w.Screen, 2, 6 + i, lineNum, tcell.StyleDefault.Foreground(tcell.ColorGray))
+        utils.PlaceText(w.Screen, 7, 6 + i, string(line), tcell.StyleDefault.Foreground(tcell.ColorWhite))
+    }
+}
+
+func (w *Window) DrawCursor(){
+    utils.PlaceText(w.Screen, w.File.Cursor.CoordX + 7, w.File.Cursor.CoordY + 6, string(w.File.Cursor.Char), w.File.Cursor.Style)
 }
 
 func (w *Window) Draw() {
@@ -79,11 +104,27 @@ func (w *Window) Draw() {
 	defer quit()
 
 	for {
+        // go w.File.Cursor.Blink()
 		w.DrawFrame()
 		w.DrawCommandLine()
-		if err := w.HandleEvent(); err != nil {
-			return
-		}
+        w.DrawFileContent()
+        w.DrawCursor()
+
 		w.Screen.Show()
+
+        c := make(chan error)
+        go w.HandleEvent(c)
+        // quit := func () error {
+        //     err := <- c
+        //     if err != nil {
+        //         panic(err)
+        //     }
+        //     return nil
+        // }
+        // defer quit()
+        err := <- c
+        if err != nil {
+            panic(err)
+        }
 	}
 }
