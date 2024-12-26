@@ -57,7 +57,7 @@ func (w *Window) HandleInsertMode(event tcell.Event) error {
 }
 
 
-func (w *Window) HandleNormalMode(event tcell.Event) {
+func (w *Window) HandleNormalMode(event tcell.Event) error {
     switch ev := event.(type){
     case *tcell.EventKey:
         if ev.Rune() == 'h'{
@@ -79,4 +79,5 @@ func (w *Window) HandleNormalMode(event tcell.Event) {
         }
     }
     w.File.Cursor.Char = w.File.FileContent[w.File.Cursor.CoordY][w.File.Cursor.CoordX]
+    return nil
 }

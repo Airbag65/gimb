@@ -78,7 +78,9 @@ func (w *Window) HandleEvent(e chan error){
                 e <- err
             }
         } else if w.Mode == utils.NormalMode {
-            w.HandleNormalMode(event)
+            if err := w.HandleNormalMode(event); err != nil {
+                e <- err
+            }
         }
     }
     e <- nil
