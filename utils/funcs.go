@@ -38,6 +38,12 @@ func Help(s tcell.Screen) {
 	PlaceText(s, 3, 22, "help", defStyle)
 	PlaceText(s, 20, 22, "-- Help menu", defStyle)
 
+    PlaceText(s, 3, 24, "w", defStyle)
+    PlaceText(s, 20, 24, "-- Save", defStyle)
+
+    PlaceText(s, 3, 26, "wq", defStyle)
+    PlaceText(s, 20, 26, "-- Save and quit", defStyle)
+
 	s.Show()
 
 	for {

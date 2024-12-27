@@ -47,6 +47,9 @@ func (w *Window) HandleInsertMode(event tcell.Event) error {
             w.File.FileContent[w.File.Cursor.CoordY] = w.File.FileContent[w.File.Cursor.CoordY][:w.File.Cursor.CoordX]
             w.File.Cursor.CoordY++
             w.File.Cursor.CoordX = 0
+        } else if ev.Key() == tcell.KeyBackspace || ev.Key() == tcell.KeyBackspace2 {
+            w.File.FileContent[w.File.Cursor.CoordY] = append(w.File.FileContent[w.File.Cursor.CoordY][:w.File.Cursor.CoordX - 1], w.File.FileContent[w.File.Cursor.CoordY][w.File.Cursor.CoordX:]...)
+            w.File.Cursor.CoordX--
         } else {
             w.File.FileContent[w.File.Cursor.CoordY] = slices.Insert(w.File.FileContent[w.File.Cursor.CoordY], w.File.Cursor.CoordX, ev.Rune())
             w.File.Cursor.CoordX++
