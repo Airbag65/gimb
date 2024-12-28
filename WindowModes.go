@@ -50,6 +50,10 @@ func (w *Window) HandleInsertMode(event tcell.Event) error {
         } else if ev.Key() == tcell.KeyBackspace || ev.Key() == tcell.KeyBackspace2 {
             w.File.FileContent[w.File.Cursor.CoordY] = append(w.File.FileContent[w.File.Cursor.CoordY][:w.File.Cursor.CoordX - 1], w.File.FileContent[w.File.Cursor.CoordY][w.File.Cursor.CoordX:]...)
             w.File.Cursor.CoordX--
+            // if len(w.File.FileContent[w.File.Cursor.CoordY]) >= 1{
+            //     w.File.FileContent = append(w.File.FileContent[:w.File.Cursor.CoordY - 1], w.File.FileContent[w.File.Cursor.CoordY])
+            // } else {
+            // }
         } else {
             w.File.FileContent[w.File.Cursor.CoordY] = slices.Insert(w.File.FileContent[w.File.Cursor.CoordY], w.File.Cursor.CoordX, ev.Rune())
             w.File.Cursor.CoordX++
@@ -68,19 +72,30 @@ func (w *Window) HandleNormalMode(event tcell.Event) error {
                 w.File.Cursor.CoordX--
             }
         } else if ev.Rune() == 'l'{
-            if w.File.Cursor.CoordX < len(w.File.FileContent[w.File.Cursor.CoordY]) - 1{
+            if w.File.Cursor.CoordX < len(w.File.FileContent[w.File.Cursor.CoordY]){
                 w.File.Cursor.CoordX++
             }
         } else if ev.Rune() == 'j' {
             if w.File.Cursor.CoordY < len(w.File.FileContent) - 1{
                 w.File.Cursor.CoordY++
+                if w.File.Cursor.CoordX > len(w.File.FileContent[w.File.Cursor.CoordY]){
+                   w.File.Cursor.CoordX = len(w.File.FileContent[w.File.Cursor.CoordY]) 
+                }
             }
         } else if ev.Rune() == 'k' {
             if w.File.Cursor.CoordY != 0 {
                 w.File.Cursor.CoordY--
+                if w.File.Cursor.CoordX > len(w.File.FileContent[w.File.Cursor.CoordY]){
+                   w.File.Cursor.CoordX = len(w.File.FileContent[w.File.Cursor.CoordY]) 
+                }
             }
         }
     }
-    w.File.Cursor.Char = w.File.FileContent[w.File.Cursor.CoordY][w.File.Cursor.CoordX]
+
+    if w.File.Cursor.CoordX < len(w.File.FileContent[w.File.Cursor.CoordY]){
+        w.File.Cursor.Char = w.File.FileContent[w.File.Cursor.CoordY][w.File.Cursor.CoordX]
+    } else {
+        w.File.Cursor.Char = ' '
+    }
     return nil
 }
