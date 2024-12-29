@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"os"
 )
 
 func main() {
     defer func(){
-        recover()
+        e := recover()
+        fmt.Print(e)
     }()
 	path := string(os.Args[1])
 	if path == "" {
@@ -14,5 +16,5 @@ func main() {
     }
 	window := NewWindow(path)
 	window.Draw()
-
+    // fmt.Print(window.File.FileContent)
 }
