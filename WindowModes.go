@@ -48,10 +48,7 @@ func (w *Window) HandleInsertMode(event tcell.Event) error {
             w.File.Cursor.CoordY++
             w.File.Cursor.CoordX = 0
         } else if ev.Key() == tcell.KeyBackspace || ev.Key() == tcell.KeyBackspace2 {
-            if len(w.File.FileContent[w.File.Cursor.CoordY]) == 0{
-                w.File.FileContent = append(w.File.FileContent[:w.File.Cursor.CoordY], w.File.FileContent[w.File.Cursor.CoordY + 1:]...)
-                w.File.Cursor.Char = w.File.FileContent[w.File.Cursor.CoordY][w.File.Cursor.CoordX]
-            } else {
+            if len(w.File.FileContent[w.File.Cursor.CoordY]) > 0{
                 w.File.FileContent[w.File.Cursor.CoordY] = append(w.File.FileContent[w.File.Cursor.CoordY][:w.File.Cursor.CoordX - 1], w.File.FileContent[w.File.Cursor.CoordY][w.File.Cursor.CoordX:]...)
                 w.File.Cursor.CoordX--
             }
@@ -90,6 +87,9 @@ func (w *Window) HandleNormalMode(event tcell.Event) error {
                    w.File.Cursor.CoordX = len(w.File.FileContent[w.File.Cursor.CoordY]) 
                 }
             }
+        } else if ev.Rune() == 'D' {
+            w.File.FileContent = append(w.File.FileContent[:w.File.Cursor.CoordY], w.File.FileContent[w.File.Cursor.CoordY + 1:]...)
+            // w.File.Cursor.CoordX--
         }
     }
 
