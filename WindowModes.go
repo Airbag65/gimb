@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gimb_out/utils"
+	"gimb/utils"
 	"slices"
 
 	"github.com/gdamore/tcell/v2"

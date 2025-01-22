@@ -16,5 +16,4 @@ func main() {
     }
 	window := NewWindow(path)
 	window.Draw()
-    // fmt.Print(window.File.FileContent)
 }

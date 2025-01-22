@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"gimb_out/utils"
+	"gimb/utils"
 	"log"
 	"strings"
 
