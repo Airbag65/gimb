@@ -19,12 +19,6 @@ func NewBuffer() *CommandBuffer {
 func (c *CommandBuffer) ExecuteCommand(s tcell.Screen, f *FileManager) error {
 	Command := strings.Join(c.Command[:], "")
 	switch Command {
-	// case "red":
-	//     Red(s)
-	// case "green":
-	//     Green(s)
-	// case "blue":
-	//     Blue(s)
 	case "q":
 		return fmt.Errorf("Quit")
 	case "quit":
@@ -33,10 +27,6 @@ func (c *CommandBuffer) ExecuteCommand(s tcell.Screen, f *FileManager) error {
 		Help(s)
 	case "help":
 		Help(s)
-	// case "def":
-	//     Default(s)
-	// case "yellow":
-	//     Yellow(s)
 	case "w":
 		f.SaveFile()
 	case "wq":

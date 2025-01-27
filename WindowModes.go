@@ -25,8 +25,7 @@ func (w *Window) HandleCommandMode(event tcell.Event) error{
             w.Mode = utils.NormalMode
             w.CommandBuffer.Clear()
             w.DrawFrame()
-        } else {
-            w.CommandBuffer.Add(ev.Rune())
+        } else { w.CommandBuffer.Add(ev.Rune())
             w.DrawFrame()
             w.DrawCommandLine()
         }

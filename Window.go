@@ -87,7 +87,11 @@ func (w *Window) HandleEvent(e chan error){
 }
 
 func (w *Window) DrawFileContent(){
+    _, height := w.Screen.Size()
     for i, line := range w.File.FileContent {
+        if 6 + i == height - 4 {
+            break
+        }
         lineNum := fmt.Sprintf("%d|", i+1)
         lineNum = strings.Repeat(string(' '), 4 - len(lineNum)) + lineNum
         utils.PlaceText(w.Screen, 2, 6 + i, lineNum, tcell.StyleDefault.Foreground(tcell.ColorGray))

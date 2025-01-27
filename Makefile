@@ -6,4 +6,5 @@ gimb:
 release:
 	go mod tidy
 	go build
-	mv ./gimb ~/gimb
+	mv ./gimb /usr/local/bin/gimb
+

@@ -10,9 +10,11 @@ func main() {
         e := recover()
         fmt.Print(e)
     }()
-	path := string(os.Args[1])
-	if path == "" {
-		path = "tmp.txt"
+    var path string
+    if len(os.Args) > 0 {
+        path = "tmp.txt"
+    } else {
+        path = string(os.Args[1])
     }
 	window := NewWindow(path)
 	window.Draw()
